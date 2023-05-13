@@ -83,4 +83,4 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.listen(4000);
+const server = app.listen(4000);
