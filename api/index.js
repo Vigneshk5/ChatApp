@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
+const ws = require("ws");
 require("dotenv").config({ path: __dirname + "/.env" });
 
 mongoose.connect(process.env.MONGODB_URL);
@@ -33,7 +34,7 @@ app.get("/profile", (req, res) => {
       res.json(userData);
     });
   } else {
-    res.status(401).json("no token");
+    res.status(500).json("no token");
   }
 });
 
