@@ -85,3 +85,25 @@ app.post("/register", async (req, res) => {
 });
 
 const server = app.listen(4000);
+
+const wss = new ws.WebSocketServer({ server });
+
+wss.on("connection", (connection, req) => {
+  const cookie = req.headers.cookie;
+  if (cookie) {
+    const tokenCookieString = cookie
+      .split(";")
+      .find((str) => str.startsWith("token="));
+    if (tokenCookieString) {
+      const token = tokenCookieString.split("=")[1];
+      if (token) {
+        jwt.verify(token, jwtSecret, {}, (err, userData) => {
+          const { userId, username } = userData;
+          if (err) throw err;
+          connection.userId = userId;
+          connection.username = username;
+        });
+      }
+    }
+  }
+});
