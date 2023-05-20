@@ -44,20 +44,22 @@ export default function Chat() {
       })
     );
     setNewMessageText("");
+
     setMessages((prev) => [
       ...prev,
       {
         text: newMessageText,
         sender: id,
         recipient: selectedUserId,
-        id: Date.now(),
+        _id: Date.now(),
       },
     ]);
   }
 
   const onlinePeopleExclOurUser = { ...onlinePeople };
   delete onlinePeopleExclOurUser[id];
-  const messagesWithoutDupes = uniqBy(messages, " id");
+
+  const messagesWithoutDupes = uniqBy(messages, "_id");
 
   return (
     <div className="flex h-screen">
@@ -101,7 +103,6 @@ export default function Chat() {
                         : " bg-white text-gray-500")
                     }
                   >
-                    {console.log(message.text)}
                     {message.text}
                   </div>
                 </div>

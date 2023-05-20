@@ -124,7 +124,7 @@ wss.on("connection", (connection, req) => {
             JSON.stringify({
               text,
               sender: connection.userId,
-              id: messageDoc._id,
+              _id: messageDoc._id,
             })
           )
         );
