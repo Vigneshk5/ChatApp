@@ -76,7 +76,9 @@ export default function Chat() {
 
   useEffect(() => {
     if (selectedUserId) {
-      axios.get("/messages/" + selectedUserId);
+      axios.get("/messages/" + selectedUserId).then((res) => {
+        setMessages(res.data);
+      });
     }
   }, [selectedUserId]);
 
@@ -119,7 +121,10 @@ export default function Chat() {
             <div className="relative h-full">
               <div className="overflow-y-scroll absolute top-0 left-0 right-0 bottom-2">
                 {messagesWithoutDupes.map((message) => (
-                  <div className={message.sender === id ? "text-right" : " text-left"}>
+                  <div
+                    key={message._id}
+                    className={message.sender === id ? "text-right" : " text-left"}
+                  >
                     <div
                       className={
                         "text-left inline-block p-2 my-2 rounded-lg text-sm" +
