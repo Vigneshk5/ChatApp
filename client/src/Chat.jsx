@@ -13,7 +13,7 @@ export default function Chat() {
   const [newMessageText, setNewMessageText] = useState("");
   const [messages, setMessages] = useState([]);
   const [offlinePeople, setOfflinePeople] = useState({});
-  const { username, id } = useContext(UserContext);
+  const { username, id, setId, setUsername } = useContext(UserContext);
   const divUnderMessages = useRef();
 
   useEffect(() => {
@@ -46,6 +46,14 @@ export default function Chat() {
     } else if ("text" in messageData) {
       setMessages((prev) => [...prev, { ...messageData }]);
     }
+  }
+
+  function logout() {
+    axios.post("/logout").then(() => {
+      setWs(null);
+      setId(null);
+      setUsername(null);
+    });
   }
 
   function sendMessage(ev) {
@@ -104,31 +112,70 @@ export default function Chat() {
 
   return (
     <div className="flex h-screen">
-      <div className="bg-white w-1/3 ">
-        <Logo />
-        {Object.keys(onlinePeopleExclOurUser).map((userId) => (
-          <Contact
-            key={userId}
-            id={userId}
-            online={true}
-            username={onlinePeopleExclOurUser[userId]}
-            onClick={() => {
-              setSelectedUserId(userId);
-              console.log({ userId });
-            }}
-            selected={userId === selectedUserId}
-          />
-        ))}
-        {Object.keys(offlinePeople).map((userId) => (
-          <Contact
-            key={userId}
-            id={userId}
-            online={false}
-            username={offlinePeople[userId].username}
-            onClick={() => setSelectedUserId(userId)}
-            selected={userId === selectedUserId}
-          />
-        ))}
+      <div className="bg-white w-1/3 flex flex-col ">
+        <div className="flex-grow">
+          <Logo />
+          {Object.keys(onlinePeopleExclOurUser).map((userId) => (
+            <Contact
+              key={userId}
+              id={userId}
+              online={true}
+              username={onlinePeopleExclOurUser[userId]}
+              onClick={() => {
+                setSelectedUserId(userId);
+                console.log({ userId });
+              }}
+              selected={userId === selectedUserId}
+            />
+          ))}
+          {Object.keys(offlinePeople).map((userId) => (
+            <Contact
+              key={userId}
+              id={userId}
+              online={false}
+              username={offlinePeople[userId].username}
+              onClick={() => setSelectedUserId(userId)}
+              selected={userId === selectedUserId}
+            />
+          ))}
+        </div>
+
+        <div className="p-2 text-center flex items-center justify-center">
+          <span className="mr-2 text-sm text-gray-600 flex items-center">
+            {/* <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="#6366F1"
+              className="w-4 h-4"
+            >
+              <path
+                fillRule="evenodd"
+                d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
+                clipRule="evenodd"
+              />
+            </svg> */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="#6366F1"
+              className="w-4 h-4"
+            >
+              <path
+                fillRule="evenodd"
+                d="M12.963 2.286a.75.75 0 00-1.071-.136 9.742 9.742 0 00-3.539 6.177A7.547 7.547 0 016.648 6.61a.75.75 0 00-1.152-.082A9 9 0 1015.68 4.534a7.46 7.46 0 01-2.717-2.248zM15.75 14.25a3.75 3.75 0 11-7.313-1.172c.628.465 1.35.81 2.133 1a5.99 5.99 0 011.925-3.545 3.75 3.75 0 013.255 3.717z"
+                clipRule="evenodd"
+              />
+            </svg>
+
+            {username}
+          </span>
+          <button
+            onClick={logout}
+            className="text-sm bg-indigo-100 py-1 px-2 text-gray-500 border rounded-sm"
+          >
+            logout
+          </button>
+        </div>
       </div>
       <div className="flex flex-col bg-indigo-50 w-2/3 p-2">
         <div className="flex-grow">
