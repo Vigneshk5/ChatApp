@@ -5,7 +5,7 @@ import { UserContext } from "./UserContext";
 export default function RegisterAndLoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoginOrRegister, setLoginOrRegister] = useState("register");
+  const [isLoginOrRegister, setLoginOrRegister] = useState("login");
   const { setUsername: setLoggedInUsername, setId } = useContext(UserContext);
 
   async function handleSubmit(ev) {
@@ -32,18 +32,25 @@ export default function RegisterAndLoginForm() {
           placeholder="password"
           className="block w-full rounded-sm p-2 mb-2"
         />
-        <button className="block bg-blue-500 text-white w-full rounded-sm p-2">{isLoginOrRegister === "register" ? "Register" : "Login"}</button>
+        <button className="block bg-blue-500 text-white w-full rounded-sm p-2">
+          {isLoginOrRegister === "register" ? "Register" : "Login"}
+        </button>
         <div className="text-center mt-2">
           {isLoginOrRegister === "register" && (
             <div>
               Already a member?
-              <button onClick={() => setLoginOrRegister("login")}> login</button>
+              <button className="ml-1" onClick={() => setLoginOrRegister("login")}>
+                {" "}
+                login
+              </button>
             </div>
           )}
           {isLoginOrRegister === "login" && (
             <div>
               Don't have an account?
-              <button onClick={() => setLoginOrRegister("register")}> Register</button>
+              <button className="ml-1" onClick={() => setLoginOrRegister("register")}>
+                Register
+              </button>
             </div>
           )}
         </div>

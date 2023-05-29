@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const ws = require("ws");
+const fs = require("fs");
 require("dotenv").config({ path: __dirname + "/.env" });
 
 mongoose.connect(process.env.MONGODB_URL);
@@ -14,6 +15,7 @@ const jwtSecret = process.env.JWT_SECRET;
 const bcryptSalt = bcrypt.genSaltSync(10);
 
 const app = express();
+app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(express.json());
 app.use(cookieParser());
 app.use(
@@ -172,14 +174,23 @@ wss.on("connection", (connection, req) => {
   connection.on("message", async (message) => {
     const messageData = JSON.parse(message.toString());
     const { recipient, text, file } = messageData;
+    let filename = null;
     if (file) {
-      console.log(file);
+      const parts = file.name.split(".");
+      const ext = parts[parts.length - 1];
+      filename = Date.now() + "." + ext;
+      const path = __dirname + "/uploads/" + filename;
+      const bufferData = Buffer.from(file.data.split(",")[1], "base64");
+      fs.writeFile(path, bufferData, () => {
+        console.log("file saved:" + path);
+      });
     }
-    if (recipient && text) {
+    if (recipient && (text || file)) {
       const messageDoc = await Message.create({
         sender: connection.userId,
         recipient,
         text,
+        file: file ? filename : null,
       });
       [...wss.clients]
         .filter((c) => c.userId === recipient)
@@ -188,6 +199,8 @@ wss.on("connection", (connection, req) => {
             JSON.stringify({
               text,
               sender: connection.userId,
+              recipient,
+              file: file ? filename : null,
               _id: messageDoc._id,
             })
           )
