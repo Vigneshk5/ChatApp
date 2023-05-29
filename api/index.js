@@ -145,6 +145,7 @@ wss.on("connection", (connection, req) => {
     connection.deathTimer = setInterval(() => {
       connection.isAlive = false;
       clearInterval(connection.timer);
+      connection.terminate();
       notifyAboutOnlinePeople();
     }, 1000);
   }, 5000);
