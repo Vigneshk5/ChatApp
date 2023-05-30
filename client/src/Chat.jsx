@@ -17,7 +17,7 @@ export default function Chat() {
 
   useEffect(() => {
     connectToWs();
-  }, []);
+  }, [selectedUserId]);
 
   function connectToWs() {
     const ws = new WebSocket("ws://localhost:4000");
