@@ -20,7 +20,7 @@ export default function Chat() {
   }, [selectedUserId]);
 
   function connectToWs() {
-    const ws = new WebSocket("ws://localhost:4000");
+    const ws = new WebSocket("ws://chatapi1-uzmt.onrender.com");
     setWs(ws);
     ws.addEventListener("message", handleMessage);
     ws.addEventListener("close", () => {
